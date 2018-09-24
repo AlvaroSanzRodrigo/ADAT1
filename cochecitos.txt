@@ -1,0 +1,17 @@
+Mercedes-Benz
+a 200 d
+140
+Blanco
+#
+BMW
+#
+Hyundai
+i20 Go
+100
+Beige
+#
+Ford
+Fiesta
+60
+Blanco
+#
