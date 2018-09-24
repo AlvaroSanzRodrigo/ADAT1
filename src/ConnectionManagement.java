@@ -3,7 +3,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
-public class ConnectionManagement{
+public class ConnectionManagement implements MagementInterface {
 
     //Atributos de la clase
     private String bd;
@@ -32,7 +32,7 @@ public class ConnectionManagement{
                 url = "jdbc:mysql://localhost/" + bd + "?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 
             } else
-                System.err.println ("Fichero no encontrado");
+                System.err.println("Fichero no encontrado");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -56,7 +56,7 @@ public class ConnectionManagement{
             // We get the metadata so we can handle the writing of the said data
             ResultSetMetaData rsmd = rset.getMetaData();
             while (rset.next())
-                System.out.println("| " +rsmd.getColumnName(1) + " - " + rset.getString(1) + "\t | \t" + rsmd.getColumnName(2) + " - " + rset.getString(2) + "\t | \t" + rsmd.getColumnName(3) + " - " + rset.getString(3) + "\t | \t" + rsmd.getColumnName(4) + " - " + rset.getString(4) + " cv \t | \t" + rsmd.getColumnName(5) + " - " + rset.getString(5) + " \t | \t");
+                System.out.println("| " + rsmd.getColumnName(1) + " - " + rset.getString(1) + "\t | \t" + rsmd.getColumnName(2) + " - " + rset.getString(2) + "\t | \t" + rsmd.getColumnName(3) + " - " + rset.getString(3) + "\t | \t" + rsmd.getColumnName(4) + " - " + rset.getString(4) + " cv \t | \t" + rsmd.getColumnName(5) + " - " + rset.getString(5) + " \t | \t");
             rset.close();
             pstmt.close();
         } catch (SQLException s) {
@@ -65,17 +65,42 @@ public class ConnectionManagement{
 
     }
 
-    public ArrayList<Coche> getAllCarsInDB(){
+    public void removeACarFromDB(int carID) {
+    }
+
+    public void updateACarFromDB(Coche coche, int carID) {
+
+    }
+
+    @Override
+    public void write(ArrayList<Coche> coches) {
+        for (Coche coche : coches) {
+            try {
+                PreparedStatement pstmt = conexion.prepareStatement("INSERT INTO coches VALUES (null ,?, ? , ?, ?)");
+                pstmt.setString(1, coche.getMarca());
+                pstmt.setString(2, coche.getModelo());
+                pstmt.setInt(3, coche.getCavallaje());
+                pstmt.setString(4, coche.getColor());
+                pstmt.executeUpdate();
+                pstmt.close();
+            } catch (SQLException s) {
+                s.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public ArrayList<Coche> read() {
         ArrayList<Coche> carsInDB = new ArrayList<>();
         Coche c;
         try {
             PreparedStatement pstmt = conexion.prepareStatement("SELECT * from coches_adat.coches");
             ResultSet rset = pstmt.executeQuery();
 
-            while (rset.next()){
+            while (rset.next()) {
                 c = new Coche();
                 c.setMarca(rset.getString(2));
-                c.setModelo( rset.getString(3));
+                c.setModelo(rset.getString(3));
                 c.setCavallaje(Integer.parseInt(rset.getString(4)));
                 c.setColor(rset.getString(5));
                 carsInDB.add(c);
@@ -88,47 +113,37 @@ public class ConnectionManagement{
         return carsInDB;
     }
 
-    public void writeOnDBFromConsole(Coche coche){
-        try {
-            PreparedStatement pstmt = conexion.prepareStatement("INSERT INTO coches VALUES (null ,?, ? , ?, ?)");
-            pstmt.setString(1, coche.getMarca());
-            pstmt.setString(2,coche.getModelo());
-            pstmt.setInt(3, coche.getCavallaje());
-            pstmt.setString(4, coche.getColor());
-            pstmt.executeUpdate();
-            pstmt.close();
-        } catch (SQLException s) {
-            s.printStackTrace();
-        }
-    }
-
-    public void removeACarFromDB(int carID){
+    @Override
+    public void delete(int ID) {
         try {
             PreparedStatement pstmt = conexion.prepareStatement("DELETE FROM coches WHERE coches.ID = ?");
-            pstmt.setInt(1,carID);
+            pstmt.setInt(1, ID);
             pstmt.executeUpdate();
             pstmt.close();
         } catch (SQLException s) {
             System.err.println("Error en la consulta sql, porfavor vuelve a intentarlo");
         }
     }
-    public void closeConnection(){
+
+    public void closeConnection() {
         try {
             conexion.close();
         } catch (SQLException e) {
-           System.err.println("no se puede cerrar conexion.");
+            System.err.println("no se puede cerrar conexion.");
         }
+
     }
 
-    public void updateACarFromDB(Coche coche, int carID){
+    @Override
+    public void update(Coche c, int ID) {
         try {
             PreparedStatement pstmt = conexion.prepareStatement("UPDATE coches SET ID = ?, marca = ?, modelo = ?, cavallaje = ?, color = ? WHERE coches.ID = ?");
-            pstmt.setInt(1, carID);
-            pstmt.setString(2, coche.getMarca());
-            pstmt.setString(3,coche.getModelo());
-            pstmt.setInt(4, coche.getCavallaje());
-            pstmt.setString(5, coche.getColor());
-            pstmt.setInt(6, carID);
+            pstmt.setInt(1, ID);
+            pstmt.setString(2, c.getMarca());
+            pstmt.setString(3, c.getModelo());
+            pstmt.setInt(4, c.getCavallaje());
+            pstmt.setString(5, c.getColor());
+            pstmt.setInt(6, ID);
             pstmt.executeUpdate();
             pstmt.close();
         } catch (SQLException s) {

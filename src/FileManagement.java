@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.ArrayList;
 
 
-public class FileManagement{
+public class FileManagement implements MagementInterface {
 
     private FileWriter fw;
     private BufferedWriter writer;
@@ -25,6 +25,7 @@ public class FileManagement{
         return fileName;
     }
 
+    @Override
     public void write(ArrayList<Coche> coches) {
 
         try {
@@ -45,39 +46,8 @@ public class FileManagement{
 
     }
 
-    public void readFromFileToWriteInConsole(String S_Archivo) {
-        File archivo = null;
-        FileReader fr = null;
-        BufferedReader br = null;
-
-        try {
-            // crea los objetos necesarios
-            archivo = new File(S_Archivo);
-            fr = new FileReader(archivo);
-            br = new BufferedReader(fr);
-
-            // Lee el archivo
-            String linea;
-            while ((linea = br.readLine()) != null)
-                if (linea.equals("#"))
-                    System.out.print("\n Siguiente coche \n");
-                else
-                    System.out.println(linea);
-        } catch (Exception e) {
-            System.err.println("Archivo no encontrado");
-        } finally {
-            // cierra el archivo
-            try {
-                if (null != fr) {
-                    fr.close();
-                }
-            } catch (Exception e2) {
-                System.err.print("Fallo en el archivo, seleccione otro.");
-            }
-        }
-    }
-
-    public ArrayList<Coche> getAllCars() {
+    @Override
+    public ArrayList<Coche> read() {
         File archivo = null;
         FileReader fr = null;
         BufferedReader br = null;
@@ -116,6 +86,17 @@ public class FileManagement{
         }
         return carList;
     }
+
+    @Override
+    public void delete(int ID) {
+
+    }
+
+    @Override
+    public void update(Coche c, int ID) {
+
+    }
+
 
     public boolean isFileCorrupted(String S_Archivo) {
         File archivo = null;
