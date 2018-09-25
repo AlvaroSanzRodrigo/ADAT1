@@ -3054,7 +3054,7 @@ public class DatabaseMetaData implements java.sql.DatabaseMetaData {
             String columnNamePattern, boolean returnProcedures, boolean returnFunctions) throws SQLException {
 
         List<ComparableWrapper<String, ProcedureType>> procsOrFuncsToExtractList = new ArrayList<>();
-        //Main container to be passed to getProceduresAndOrFunctions
+        //MainConsole container to be passed to getProceduresAndOrFunctions
         ResultSet procsAndOrFuncsRs = null;
 
         try {

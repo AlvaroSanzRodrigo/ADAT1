@@ -1,5 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Properties;
 
 
 public class FileManagement implements MagementInterface {
@@ -7,6 +9,10 @@ public class FileManagement implements MagementInterface {
     private FileWriter fw;
     private BufferedWriter writer;
     private String S_Archivo = "";
+    private int lastID;
+    private File archivo;
+    private FileReader fr;
+    private BufferedReader br;
 
     public FileManagement(String S_Archivo, Boolean append) {
         this.S_Archivo = S_Archivo;
@@ -31,7 +37,8 @@ public class FileManagement implements MagementInterface {
         try {
 
             for (Coche c : coches) {
-                writer.append(c.getMarca());
+                writer.append(String.valueOf(c.getID()));
+                writer.append("\n" + c.getMarca());
                 writer.append("\n" + c.getModelo());
                 writer.append("\n" + String.valueOf(c.getCavallaje()));
                 writer.append("\n" + c.getColor());
@@ -48,9 +55,7 @@ public class FileManagement implements MagementInterface {
 
     @Override
     public ArrayList<Coche> read() {
-        File archivo = null;
-        FileReader fr = null;
-        BufferedReader br = null;
+
         ArrayList<Coche> carList = new ArrayList<>();
         Coche c;
 
@@ -65,6 +70,8 @@ public class FileManagement implements MagementInterface {
             while ((linea = br.readLine()) != null) {
                 c = new Coche();
                 while (!linea.equals("#")) {
+                    c.setID(Integer.parseInt(linea));
+                    linea = br.readLine();
                     c.setMarca(linea);
                     linea = br.readLine();
                     c.setModelo(linea);
@@ -76,11 +83,7 @@ public class FileManagement implements MagementInterface {
                 }
                 c.toString();
                 carList.add(c);
-                System.out.println(carList.size() + c.toString());
-                System.out.print("\n Siguiente coche \n");
             }
-
-
         } catch (Exception e) {
             System.err.println("Archivo no encontrado");
         }
@@ -89,7 +92,10 @@ public class FileManagement implements MagementInterface {
 
     @Override
     public void delete(int ID) {
-
+        HashMap<Integer, Coche> cochesHashMap = new HashMap<Integer, Coche>();
+        for (Coche coche: this.read()) {
+            cochesHashMap.put(coche.getID(), coche);
+        }
     }
 
     @Override
@@ -98,7 +104,7 @@ public class FileManagement implements MagementInterface {
     }
 
 
-    public boolean isFileCorrupted(String S_Archivo) {
+    public boolean isFileCorrupted() {
         File archivo = null;
         FileReader fr = null;
         BufferedReader br = null;
@@ -118,12 +124,51 @@ public class FileManagement implements MagementInterface {
                 if (linea.equals("#"))
                     hastags++;
             }
-            if ((hastags*5) != lines)
+            if ((hastags*6) != lines)
                 isCorrupted = true;
         } catch (Exception e) {
             System.err.println("Archivo inexistente o corrupto");
         }
         return isCorrupted;
     }
-}
 
+    public int getLastIDFromConfig(){
+        Properties propiedades = new Properties();
+        readConfig(propiedades);
+        this.lastID = Integer.parseInt(propiedades.getProperty("lastID"));
+        return this.lastID;
+    }
+
+
+    public int setLastIDToConfig(){
+        Properties propiedades = new Properties();
+        idconfig(propiedades);
+        propiedades.setProperty("lastID", String.valueOf(setLastIDFromConfig()+1));
+        return this.lastID;
+    }
+
+    private void readConfig(Properties propiedades) {
+        try {
+
+            archivo = new File("config.ini");
+            if (archivo.exists()) {
+                fr = new FileReader(archivo);
+                br = new BufferedReader(fr);
+                propiedades.load(fr);
+// obtenemos las propiedades y las imprimimos
+
+            } else
+                System.err.println("Fichero no encontrado");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        MagementInterface emisor = new FileManagement("coches.txt", true);
+        System.out.println(((FileManagement) emisor).isFileCorrupted());
+        ArrayList<Coche> cochesasd = new ArrayList<Coche>();
+        cochesasd.add(new Coche(((FileManagement) emisor).setLastIDToConfig(), "Nissan", "Micra", 60, "Verde"));
+        emisor.write(cochesasd);
+    }
+}

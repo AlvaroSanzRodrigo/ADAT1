@@ -1,14 +1,16 @@
 public class Coche {
+    private int ID;
     private String marca;
     private String modelo;
     private int cavallaje;
     private String color;
 
-    public Coche(){
+    public Coche() {
         super();
-
     }
-    public Coche(String marca, String modelo, int cavallaje, String color) {
+
+    public Coche(int ID, String marca, String modelo, int cavallaje, String color) {
+        this.ID = ID;
         this.marca = marca;
         this.modelo = modelo;
         this.cavallaje = cavallaje;
@@ -45,6 +47,14 @@ public class Coche {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
+    }
+
+    public int getID() {
+        return ID;
     }
 
     @Override

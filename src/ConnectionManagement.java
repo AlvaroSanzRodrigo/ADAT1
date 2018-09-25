@@ -65,13 +65,6 @@ public class ConnectionManagement implements MagementInterface {
 
     }
 
-    public void removeACarFromDB(int carID) {
-    }
-
-    public void updateACarFromDB(Coche coche, int carID) {
-
-    }
-
     @Override
     public void write(ArrayList<Coche> coches) {
         for (Coche coche : coches) {
@@ -99,6 +92,7 @@ public class ConnectionManagement implements MagementInterface {
 
             while (rset.next()) {
                 c = new Coche();
+                c.setID(rset.getInt(1));
                 c.setMarca(rset.getString(2));
                 c.setModelo(rset.getString(3));
                 c.setCavallaje(Integer.parseInt(rset.getString(4)));
