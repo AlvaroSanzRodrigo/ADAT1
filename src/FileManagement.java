@@ -46,6 +46,7 @@ public class FileManagement implements MagementInterface {
 
             }
             writer.close();
+            setLastIDToConfig();
         } catch (IOException e) {
             System.err.println("Jaime, que no me lo rompes esto");
         }
@@ -92,17 +93,42 @@ public class FileManagement implements MagementInterface {
 
     @Override
     public void delete(int ID) {
-        HashMap<Integer, Coche> cochesHashMap = new HashMap<Integer, Coche>();
+        HashMap<Integer, Coche> cochesHashMap = new HashMap<>();
         for (Coche coche: this.read()) {
             cochesHashMap.put(coche.getID(), coche);
         }
+        cochesHashMap.remove(ID);
+        saveChangesOnFile(cochesHashMap);
     }
 
     @Override
     public void update(Coche c, int ID) {
-
+        HashMap<Integer, Coche> cochesHashMap = new HashMap<>();
+        for (Coche coche: this.read()) {
+            cochesHashMap.put(coche.getID(), coche);
+        }
+        cochesHashMap.replace(ID, c);
+        saveChangesOnFile(cochesHashMap);
     }
 
+    private void saveChangesOnFile(HashMap<Integer, Coche> cochesHashMap) {
+        try {
+            FileWriter fwe = new FileWriter(S_Archivo, false);
+            BufferedWriter writere = new BufferedWriter(fwe);
+            for (Coche c : cochesHashMap.values()) {
+                writere.append(String.valueOf(c.getID()));
+                writere.append("\n" + c.getMarca());
+                writere.append("\n" + c.getModelo());
+                writere.append("\n" + String.valueOf(c.getCavallaje()));
+                writere.append("\n" + c.getColor());
+                writere.append("\n#\n");
+            }
+            writere.close();
+            setLastIDToConfig();
+        } catch (IOException e) {
+            System.err.println("Jaime, que no me lo rompes esto");
+        }
+    }
 
     public boolean isFileCorrupted() {
         File archivo = null;
@@ -132,19 +158,25 @@ public class FileManagement implements MagementInterface {
         return isCorrupted;
     }
 
-    public int getLastIDFromConfig(){
+    public int getnextIDFromConfig(){
         Properties propiedades = new Properties();
         readConfig(propiedades);
         this.lastID = Integer.parseInt(propiedades.getProperty("lastID"));
-        return this.lastID;
+        return this.lastID + 1;
     }
 
 
-    public int setLastIDToConfig(){
+    private void setLastIDToConfig(){
         Properties propiedades = new Properties();
-        idconfig(propiedades);
-        propiedades.setProperty("lastID", String.valueOf(setLastIDFromConfig()+1));
-        return this.lastID;
+        readConfig(propiedades);
+        propiedades.replace("lastID", String.valueOf(getnextIDFromConfig()));
+        try {
+            FileWriter fwconfig = new FileWriter("config.ini", false);
+            Writer writerconfig = new BufferedWriter(fwconfig);
+            propiedades.store(writerconfig, "");
+        } catch (IOException e) {
+            System.err.println("Escoja otro archivo, este no existe");
+        }
     }
 
     private void readConfig(Properties propiedades) {
@@ -155,8 +187,6 @@ public class FileManagement implements MagementInterface {
                 fr = new FileReader(archivo);
                 br = new BufferedReader(fr);
                 propiedades.load(fr);
-// obtenemos las propiedades y las imprimimos
-
             } else
                 System.err.println("Fichero no encontrado");
         } catch (IOException ex) {
@@ -168,7 +198,6 @@ public class FileManagement implements MagementInterface {
         MagementInterface emisor = new FileManagement("coches.txt", true);
         System.out.println(((FileManagement) emisor).isFileCorrupted());
         ArrayList<Coche> cochesasd = new ArrayList<Coche>();
-        cochesasd.add(new Coche(((FileManagement) emisor).setLastIDToConfig(), "Nissan", "Micra", 60, "Verde"));
-        emisor.write(cochesasd);
+        emisor.delete(23);
     }
 }
