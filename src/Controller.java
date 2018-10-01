@@ -10,6 +10,10 @@ public class Controller {
         receptor.write(emisor.read());
     }
 
+    public void add(MagementInterface emisor,ArrayList<Coche> cocheArrayList){
+        emisor.write(cocheArrayList);
+    }
+
     public void update(MagementInterface emisor, Coche c, int ID){
         emisor.update(c,ID);
     }

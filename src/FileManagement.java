@@ -107,6 +107,7 @@ public class FileManagement implements MagementInterface {
         for (Coche coche: this.read()) {
             cochesHashMap.put(coche.getID(), coche);
         }
+        c.setID(ID);
         cochesHashMap.replace(ID, c);
         saveChangesOnFile(cochesHashMap);
     }
