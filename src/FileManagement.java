@@ -167,7 +167,7 @@ public class FileManagement implements MagementInterface {
     }
 
 
-    private void setLastIDToConfig(){
+    public void setLastIDToConfig(){
         Properties propiedades = new Properties();
         readConfig(propiedades);
         propiedades.replace("lastID", String.valueOf(getnextIDFromConfig()));
