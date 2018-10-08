@@ -144,4 +144,18 @@ public class ConnectionManagement implements MagementInterface {
             System.err.println("Error en la consulta sql, porfavor vuelve a intentarlo");
         }
     }
+
+    public void addBrand(String brandName, String brandCountry, int yearOfFundation){
+        try {
+            PreparedStatement pstmt = conexion.prepareStatement("INSERT INTO marca (idBrand, brandName, brandCountry, brandYearOfFundation) VALUES (NULL, ?, ?, ?)");
+            pstmt.setString(1, brandName);
+            pstmt.setString(2, brandCountry);
+            pstmt.setInt(3, yearOfFundation);
+            pstmt.executeUpdate();
+            pstmt.close();
+        } catch (SQLException s) {
+            System.err.println("Error en la consulta sql, porfavor vuelve a intentarlo");
+        }
+
+    }
 }

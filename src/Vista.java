@@ -14,6 +14,8 @@ public class Vista {
             System.out.println("¿De donde quiere obtener los datos?");
             System.out.println("1. Fichero");
             System.out.println("2. BBDD");
+            System.out.println("3. Configuracion");
+
             try {
                 int option = Integer.parseInt(in.nextLine());
                 switch (option) {
@@ -24,6 +26,33 @@ public class Vista {
                     case 2:
                         System.out.println("Conectando...");
                         emisor = new ConnectionManagement();
+                        break;
+                    case 3:
+                        System.out.println("1. Nueva marca");
+                        System.out.println("2. Nuevo archivo");
+                        try {
+                            int optionConfigurations = Integer.parseInt(in.nextLine());
+                            switch (optionConfigurations){
+                                case 1:
+                                    System.out.println("Introduzca nombre de la marca");
+                                    String brandName = in.nextLine();
+                                    System.out.println("Introduzca pais de procedencia");
+                                    String brandCountry = in.nextLine();
+                                    System.out.println("Introduzca año de fundación");
+                                    int yearOfFundation = Integer.parseInt(in.nextLine());
+                                    try {
+                                        emisor = new ConnectionManagement();
+                                        ((ConnectionManagement) emisor).addBrand(brandName, brandCountry, yearOfFundation);
+                                    } catch (Exception e){
+                                        System.err.println("Error al introducir marca nueva");
+                                    }
+                                    break;
+                                case 2:
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            System.err.println("Introduzca numero de opción");
+                        }
                         break;
                 }
                 try {
@@ -37,6 +66,7 @@ public class Vista {
                         System.out.println("4. Añadir dato");
                         System.out.println("5. Actualizar dato");
                         System.out.println("6. Salir");
+
                         try {
                             int optionCase1 = Integer.parseInt(in.nextLine());
                             switch (optionCase1) {
@@ -68,12 +98,12 @@ public class Vista {
                                                     System.out.println("1. Si");
                                                     System.out.println("2. No");
                                                     Boolean borrarDatosAnteriores = false;
-                                                    if (Integer.parseInt(in.nextLine())==2){
+                                                    if (Integer.parseInt(in.nextLine()) == 2) {
                                                         borrarDatosAnteriores = true;
                                                     }
                                                     receptor = new FileManagement(nombreDelArchivo, borrarDatosAnteriores);
                                                     controller.put(emisor, receptor);
-                                                }catch (Exception e){
+                                                } catch (Exception e) {
                                                     System.err.println("Escoge si o no");
                                                 }
                                                 break;
@@ -96,11 +126,11 @@ public class Vista {
                                         if (emisor.getClass() == FileManagement.class) {
                                             System.out.println("¿Cuantos coches desea añadir?");
                                             controller.add(emisor, yomismo.getCarsFromKB(Integer.parseInt(in.nextLine()), in, (FileManagement) emisor));
-                                        }else if (emisor.getClass()== ConnectionManagement.class){
+                                        } else if (emisor.getClass() == ConnectionManagement.class) {
                                             System.out.println("¿Cuantos coches desea añadir?");
                                             controller.add(emisor, yomismo.getCarsFromKB(Integer.parseInt(in.nextLine()), in));
                                         }
-                                    }catch (Exception e){
+                                    } catch (Exception e) {
                                         System.err.println("Error");
                                     }
                                     break;
@@ -111,7 +141,7 @@ public class Vista {
                                         int n = Integer.parseInt(in.nextLine());
                                         controller.update(emisor, yomismo.getCarFromKB(in), n);
 
-                                    } catch (Exception e){
+                                    } catch (Exception e) {
                                         System.err.println("Fallo en la entrada");
                                     }
                                     break;
@@ -123,7 +153,7 @@ public class Vista {
                             System.err.println("Porfavor introduce un numero");
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     System.err.println("Error qeneral");
                 }
             } catch (Exception e) {
@@ -164,6 +194,7 @@ public class Vista {
         }
         return carsArrayList;
     }
+
     public ArrayList<Coche> getCarsFromKB(int n, Scanner in) {
         ArrayList<Coche> carsArrayList = new ArrayList<>();
         Coche coche;

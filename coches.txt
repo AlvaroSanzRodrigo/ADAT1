@@ -35,56 +35,20 @@ Testa Rosa
 Blanco
 #
 22
-Hyundai
-i20 Go
-100
-Beige
-#
-23
-Ford
-Fiesta
-60
-Blanco
-#
-24
-BMW
-318 IS
+Ferrari
+Prueba FK
 140
-Negro
-#
-25
-Hyundai
-i20 Go
-100
-Beige
-#
-26
-Ford
-Fiesta
-60
-Blanco
-#
-27
-BMW
-318 IS
-140
-Negro
-#
-28
-Hyundai
-i20 Go
-100
-Beige
-#
-29
-Ford
-Fiesta
-60
-Blanco
-#
-30
-Mercedacos
-Guapisimo
-200
 Rojo
+#
+52
+BMW
+320
+130
+Blanco
+#
+54
+Ferrari
+ksdfgsd
+1234
+sdfaddf
 #

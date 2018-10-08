@@ -9,4 +9,5 @@ public interface MagementInterface {
     void delete(int ID);
 
     void  update(Coche c, int ID);
+
 }
