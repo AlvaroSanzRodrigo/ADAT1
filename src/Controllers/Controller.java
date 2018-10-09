@@ -1,3 +1,7 @@
+package Controllers;
+
+import Models.Coche;
+
 import java.util.ArrayList;
 
 public class Controller {

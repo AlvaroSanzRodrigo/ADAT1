@@ -1,3 +1,8 @@
+package Controllers;
+
+import Models.Brand;
+import Models.Coche;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +43,7 @@ public class FileManagement implements MagementInterface {
 
             for (Coche c : coches) {
                 writer.append(String.valueOf(c.getID()));
-                writer.append("\n" + c.getMarca());
+                writer.append("\n" + c.getMarca().getBrandName());
                 writer.append("\n" + c.getModelo());
                 writer.append("\n" + String.valueOf(c.getCavallaje()));
                 writer.append("\n" + c.getColor());
@@ -58,7 +63,9 @@ public class FileManagement implements MagementInterface {
     public ArrayList<Coche> read() {
 
         ArrayList<Coche> carList = new ArrayList<>();
+        HashMap<String, Brand> brandsHashMap;
         Coche c;
+
 
         try {
             // crea los objetos necesarios
@@ -66,14 +73,16 @@ public class FileManagement implements MagementInterface {
             fr = new FileReader(archivo);
             br = new BufferedReader(fr);
 
-            // Lee el archivo
+            brandsHashMap = this.readBrands();
+
+            // Lee el archivo de coches
             String linea;
             while ((linea = br.readLine()) != null) {
                 c = new Coche();
                 while (!linea.equals("#")) {
                     c.setID(Integer.parseInt(linea));
                     linea = br.readLine();
-                    c.setMarca(linea);
+                    c.setMarca(brandsHashMap.get(linea));
                     linea = br.readLine();
                     c.setModelo(linea);
                     linea = br.readLine();
@@ -112,13 +121,52 @@ public class FileManagement implements MagementInterface {
         saveChangesOnFile(cochesHashMap);
     }
 
+    @Override
+    public HashMap<String, Brand> readBrands() {
+
+        File archivoMarcas;
+        FileReader frMarcas;
+        BufferedReader brMarcas;
+        HashMap<String, Brand> brandsHashMap = new HashMap<>();
+        Brand brand;
+        try {
+            archivoMarcas = new File("brands.txt");
+            frMarcas = new FileReader(archivoMarcas);
+            brMarcas = new BufferedReader(frMarcas);
+            // Lee el archivo de marcas
+            String lineaMarcas;
+            while ((lineaMarcas = brMarcas.readLine()) != null){
+                brand = new Brand();
+                while (!lineaMarcas.equals("#")){
+                    brand.setIdBrand(Integer.parseInt(lineaMarcas));
+                    lineaMarcas = brMarcas.readLine();
+                    brand.setBrandName(lineaMarcas);
+                    lineaMarcas = brMarcas.readLine();
+                    brand.setBrandCountry(lineaMarcas);
+                    lineaMarcas = brMarcas.readLine();
+                    brand.setBrandYearOfFundation(Integer.parseInt(lineaMarcas));
+                    lineaMarcas = brMarcas.readLine();
+                }
+                brandsHashMap.put(brand.getBrandName(), brand);
+            }
+        } catch (IOException e) {
+            System.err.println("Error en el archivo marcas");
+        }
+        return brandsHashMap;
+    }
+
+    @Override
+    public void addBrand(String brandName, String brandCountry, int yearOfFundation) {
+
+    }
+
     private void saveChangesOnFile(HashMap<Integer, Coche> cochesHashMap) {
         try {
             FileWriter fwe = new FileWriter(S_Archivo, false);
             BufferedWriter writere = new BufferedWriter(fwe);
             for (Coche c : cochesHashMap.values()) {
                 writere.append(String.valueOf(c.getID()));
-                writere.append("\n" + c.getMarca());
+                writere.append("\n" + c.getMarca().getBrandName());
                 writere.append("\n" + c.getModelo());
                 writere.append("\n" + String.valueOf(c.getCavallaje()));
                 writere.append("\n" + c.getColor());

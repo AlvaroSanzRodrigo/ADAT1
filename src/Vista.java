@@ -1,4 +1,12 @@
+import Controllers.ConnectionManagement;
+import Controllers.Controller;
+import Controllers.FileManagement;
+import Controllers.MagementInterface;
+import Models.Brand;
+import Models.Coche;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Vista {
@@ -128,7 +136,7 @@ public class Vista {
                                             controller.add(emisor, yomismo.getCarsFromKB(Integer.parseInt(in.nextLine()), in, (FileManagement) emisor));
                                         } else if (emisor.getClass() == ConnectionManagement.class) {
                                             System.out.println("¿Cuantos coches desea añadir?");
-                                            controller.add(emisor, yomismo.getCarsFromKB(Integer.parseInt(in.nextLine()), in));
+                                            controller.add(emisor, yomismo.getCarsFromKB(Integer.parseInt(in.nextLine()), in, (ConnectionManagement) emisor));
                                         }
                                     } catch (Exception e) {
                                         System.err.println("Error");
@@ -139,7 +147,7 @@ public class Vista {
                                     System.out.println("Introduce ID del dato a actualizar");
                                     try {
                                         int n = Integer.parseInt(in.nextLine());
-                                        controller.update(emisor, yomismo.getCarFromKB(in), n);
+                                        controller.update(emisor, yomismo.getCarFromKB(in, emisor), n);
 
                                     } catch (Exception e) {
                                         System.err.println("Fallo en la entrada");
@@ -166,7 +174,7 @@ public class Vista {
     public void print(ArrayList<Coche> coches) {
         for (Coche coch : coches) {
             System.out.println(coch.getID());
-            System.out.println(coch.getMarca());
+            System.out.println(coch.getMarca().getBrandName());
             System.out.println(coch.getModelo());
             System.out.println(coch.getCavallaje() + "CV");
             System.out.println(coch.getColor());
@@ -178,11 +186,12 @@ public class Vista {
     public ArrayList<Coche> getCarsFromKB(int n, Scanner in, FileManagement emisor) {
         ArrayList<Coche> carsArrayList = new ArrayList<>();
         Coche coche;
+        HashMap<String, Brand> brandHashMap = emisor.readBrands();
         for (int i = 0; i < n; i++) {
             coche = new Coche();
             coche.setID(emisor.getnextIDFromConfig());
             System.out.println("Introduzca Marca");
-            coche.setMarca(in.nextLine());
+            coche.setMarca(brandHashMap.get(in.nextLine()));
             System.out.println("Introduzca Modelo");
             coche.setModelo(in.nextLine());
             System.out.println("Introduzca Cavallaje");
@@ -195,13 +204,14 @@ public class Vista {
         return carsArrayList;
     }
 
-    public ArrayList<Coche> getCarsFromKB(int n, Scanner in) {
+    public ArrayList<Coche> getCarsFromKB(int n, Scanner in, ConnectionManagement emisor) {
         ArrayList<Coche> carsArrayList = new ArrayList<>();
         Coche coche;
+        HashMap<String, Brand> brandHashMap = emisor.readBrands();
         for (int i = 0; i < n; i++) {
             coche = new Coche();
             System.out.println("Introduzca Marca");
-            coche.setMarca(in.nextLine());
+            coche.setMarca(brandHashMap.get(in.nextLine()));
             System.out.println("Introduzca Modelo");
             coche.setModelo(in.nextLine());
             System.out.println("Introduzca Cavallaje");
@@ -213,12 +223,12 @@ public class Vista {
         return carsArrayList;
     }
 
-    public Coche getCarFromKB(Scanner in) {
+    public Coche getCarFromKB(Scanner in, MagementInterface emisor) {
         ArrayList<Coche> carsArrayList = new ArrayList<>();
         Coche coche;
         coche = new Coche();
         System.out.println("Introduzca Marca");
-        coche.setMarca(in.nextLine());
+        coche.setMarca(emisor.readBrands().get(in.nextLine()));
         System.out.println("Introduzca Modelo");
         coche.setModelo(in.nextLine());
         System.out.println("Introduzca Cavallaje");

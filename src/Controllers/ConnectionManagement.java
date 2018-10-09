@@ -1,6 +1,12 @@
+package Controllers;
+
+import Models.Brand;
+import Models.Coche;
+
 import java.io.*;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Properties;
 
 public class ConnectionManagement implements MagementInterface {
@@ -70,7 +76,7 @@ public class ConnectionManagement implements MagementInterface {
         for (Coche coche : coches) {
             try {
                 PreparedStatement pstmt = conexion.prepareStatement("INSERT INTO coches VALUES (null ,?, ? , ?, ?)");
-                pstmt.setString(1, coche.getMarca());
+                pstmt.setString(1, coche.getMarca().getBrandName());
                 pstmt.setString(2, coche.getModelo());
                 pstmt.setInt(3, coche.getCavallaje());
                 pstmt.setString(4, coche.getColor());
@@ -89,11 +95,11 @@ public class ConnectionManagement implements MagementInterface {
         try {
             PreparedStatement pstmt = conexion.prepareStatement("SELECT * from coches_adat.coches");
             ResultSet rset = pstmt.executeQuery();
-
+            HashMap<String, Brand> brands = readBrands();
             while (rset.next()) {
                 c = new Coche();
                 c.setID(rset.getInt(1));
-                c.setMarca(rset.getString(2));
+                c.setMarca(brands.get(rset.getString(2)));
                 c.setModelo(rset.getString(3));
                 c.setCavallaje(Integer.parseInt(rset.getString(4)));
                 c.setColor(rset.getString(5));
@@ -133,7 +139,7 @@ public class ConnectionManagement implements MagementInterface {
         try {
             PreparedStatement pstmt = conexion.prepareStatement("UPDATE coches SET ID = ?, marca = ?, modelo = ?, cavallaje = ?, color = ? WHERE coches.ID = ?");
             pstmt.setInt(1, ID);
-            pstmt.setString(2, c.getMarca());
+            pstmt.setString(2, c.getMarca().getBrandName());
             pstmt.setString(3, c.getModelo());
             pstmt.setInt(4, c.getCavallaje());
             pstmt.setString(5, c.getColor());
@@ -145,6 +151,24 @@ public class ConnectionManagement implements MagementInterface {
         }
     }
 
+    @Override
+    public HashMap<String, Brand> readBrands() {
+        HashMap<String, Brand> brands = new HashMap<>();
+        try {
+            PreparedStatement brandspstmt = conexion.prepareStatement("select * from marca");
+            ResultSet brandsrset = brandspstmt.executeQuery();
+            while (brandsrset.next()) {
+                brands.put(brandsrset.getString(2), new Brand(brandsrset.getInt(1), brandsrset.getString(2), brandsrset.getString(3), brandsrset.getInt(4)));
+            }
+            brandspstmt.close();
+            brandsrset.close();
+        } catch (SQLException e) {
+            System.err.println("Error en la conexion de BBDD");
+        }
+
+        return brands;
+    }
+    @Override
     public void addBrand(String brandName, String brandCountry, int yearOfFundation){
         try {
             PreparedStatement pstmt = conexion.prepareStatement("INSERT INTO marca (idBrand, brandName, brandCountry, brandYearOfFundation) VALUES (NULL, ?, ?, ?)");

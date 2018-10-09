@@ -1,6 +1,8 @@
+package Models;
+
 public class Coche {
     private int ID;
-    private String marca;
+    private Brand marca;
     private String modelo;
     private int cavallaje;
     private String color;
@@ -9,7 +11,7 @@ public class Coche {
         super();
     }
 
-    public Coche(int ID, String marca, String modelo, int cavallaje, String color) {
+    public Coche(int ID, Brand marca, String modelo, int cavallaje, String color) {
         this.ID = ID;
         this.marca = marca;
         this.modelo = modelo;
@@ -17,11 +19,11 @@ public class Coche {
         this.color = color;
     }
 
-    public String getMarca() {
+    public Brand getMarca() {
         return marca;
     }
 
-    public void setMarca(String marca) {
+    public void setMarca(Brand marca) {
         this.marca = marca;
     }
 
@@ -59,7 +61,7 @@ public class Coche {
 
     @Override
     public String toString() {
-        return "Coche{" +
+        return "Models.Coche{" +
                 "marca='" + marca + '\'' +
                 ", modelo='" + modelo + '\'' +
                 ", cavallaje=" + cavallaje +
