@@ -157,6 +157,18 @@ public class FileManagement implements MagementInterface {
 
     @Override
     public void addBrand(String brandName, String brandCountry, int yearOfFundation) {
+        try {
+            FileWriter fileWriter = new FileWriter("brands.txt", true);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.append(String.valueOf(this.getnextBrandIDFromConfig()));
+            bufferedWriter.append("\n").append(brandName);
+            bufferedWriter.append("\n").append(brandCountry);
+            bufferedWriter.append("\n").append(String.valueOf(yearOfFundation));
+            bufferedWriter.append("\n#\n");
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -214,11 +226,20 @@ public class FileManagement implements MagementInterface {
         return this.lastID + 1;
     }
 
-
-    public void setLastIDToConfig(){
+    public int getnextBrandIDFromConfig(){
         Properties propiedades = new Properties();
         readConfig(propiedades);
-        propiedades.replace("lastID", String.valueOf(getnextIDFromConfig()));
+        return Integer.parseInt(propiedades.getProperty("lastBrandID"))+1;
+    }
+
+    public void setLastBrandIDToConfig(){
+        Properties propiedades = new Properties();
+        readConfig(propiedades);
+        propiedades.replace("lastBrandID", String.valueOf(getnextBrandIDFromConfig()));
+        saveConfig(propiedades);
+    }
+
+    private void saveConfig(Properties propiedades) {
         try {
             FileWriter fwconfig = new FileWriter("config.ini", false);
             Writer writerconfig = new BufferedWriter(fwconfig);
@@ -226,6 +247,14 @@ public class FileManagement implements MagementInterface {
         } catch (IOException e) {
             System.err.println("Escoja otro archivo, este no existe");
         }
+    }
+
+
+    public void setLastIDToConfig(){
+        Properties propiedades = new Properties();
+        readConfig(propiedades);
+        propiedades.replace("lastID", String.valueOf(getnextIDFromConfig()));
+        saveConfig(propiedades);
     }
 
     private void readConfig(Properties propiedades) {
@@ -245,8 +274,7 @@ public class FileManagement implements MagementInterface {
 
     public static void main(String[] args) {
         MagementInterface emisor = new FileManagement("coches.txt", true);
-        System.out.println(((FileManagement) emisor).isFileCorrupted());
-        ArrayList<Coche> cochesasd = new ArrayList<Coche>();
-        emisor.delete(23);
+        emisor.addBrand("Peugeot", "France", 1956);
+        System.out.println(emisor.readBrands().toString());
     }
 }
