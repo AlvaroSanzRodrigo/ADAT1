@@ -1,3 +1,5 @@
+package Views;
+
 import Controllers.ConnectionManagement;
 import Controllers.Controller;
 import Controllers.FileManagement;
@@ -40,7 +42,7 @@ public class Vista {
                         System.out.println("2. Nuevo archivo");
                         try {
                             int optionConfigurations = Integer.parseInt(in.nextLine());
-                            switch (optionConfigurations){
+                            switch (optionConfigurations) {
                                 case 1:
                                     System.out.println("Introduzca nombre de la marca");
                                     String brandName = in.nextLine();
@@ -51,7 +53,7 @@ public class Vista {
                                     try {
                                         emisor = new ConnectionManagement();
                                         ((ConnectionManagement) emisor).addBrand(brandName, brandCountry, yearOfFundation);
-                                    } catch (Exception e){
+                                    } catch (Exception e) {
                                         System.err.println("Error al introducir marca nueva");
                                     }
                                     break;
@@ -73,7 +75,8 @@ public class Vista {
                         System.out.println("3. Eliminar dato");
                         System.out.println("4. Añadir dato");
                         System.out.println("5. Actualizar dato");
-                        System.out.println("6. Salir");
+                        System.out.println("6. Marcas");
+                        System.out.println("7. Salir");
 
                         try {
                             int optionCase1 = Integer.parseInt(in.nextLine());
@@ -154,6 +157,63 @@ public class Vista {
                                     }
                                     break;
                                 case 6:
+                                    Boolean repeatBrandsMenu = true;
+                                    while (repeatBrandsMenu) {
+                                        System.out.println("1. añadir marca");
+                                        System.out.println("2. borrar marca");
+                                        System.out.println("3. actualizar marca");
+                                        System.out.println("4. leer marcas");
+                                        System.out.println("5. salir");
+                                        int brandOption = Integer.parseInt(in.nextLine());
+                                        try {
+                                            switch (brandOption) {
+                                                case 1:
+                                                    try {
+
+                                                        System.out.println("Nombre de la marca:");
+                                                        String brandName = in.nextLine();
+                                                        System.out.println("Nacionalidad de la marca:");
+                                                        String brandCountry = in.nextLine();
+                                                        System.out.println("Año de la marca:");
+                                                        int yearOfFundation = Integer.parseInt(in.nextLine());
+                                                        emisor.addBrand(brandName, brandCountry, yearOfFundation);
+                                                    } catch (Exception e) {
+                                                        System.err.println("Porfavor introduzca numeros o letras segun se le especifique");
+                                                    }
+                                                    break;
+                                                case 2:
+                                                    System.out.println("ATENCION: SE BORRARAN TODOS LOS COCHES QUE ESTEN RELACIONADOS CON ESA MARCA");
+                                                    System.out.println("Introduzca nombre de la marca");
+                                                    emisor.deleteBrand(in.nextLine());
+                                                    break;
+                                                case 3:
+                                                    try {
+                                                        System.out.println("No podrás cambiar el nombre de una marca");
+                                                        System.out.println("Introduzca marca a actualizar:");
+                                                        String brandName = in.nextLine();
+                                                        Brand brand = new Brand();
+                                                        System.out.println("Introduzca nacionalidad de la marca:");
+                                                        brand.setBrandCountry(in.nextLine());
+                                                        System.out.println("Introduzca año de fundaciond e la marca:");
+                                                        brand.setBrandYearOfFundation(Integer.valueOf(in.nextLine()));
+                                                        emisor.updateBrand(brandName, brand);
+                                                    } catch (Exception e) {
+                                                        System.err.println("Porfavor introduzca numeros o letras segun se le especifique");
+                                                    }
+                                                    break;
+                                                case 4:
+                                                    yomismo.printBrand(emisor.readBrands());
+                                                    break;
+                                                case 5:
+                                                    repeatBrandsMenu = false;
+                                                    break;
+                                            }
+                                        } catch (Exception e) {
+                                            System.err.println("Porfavor introduce una de las opciones");
+                                        }
+                                    }
+                                    break;
+                                case 7:
                                     repeatCase1 = false;
                                     break;
                             }
@@ -180,6 +240,15 @@ public class Vista {
             System.out.println(coch.getColor());
 
             System.out.println("####################\n");
+        }
+    }
+
+    public void printBrand(HashMap<String, Brand> brandHashMap) {
+        for (Brand brand : brandHashMap.values()) {
+            System.out.println(brand.getIdBrand());
+            System.out.println(brand.getBrandName());
+            System.out.println(brand.getBrandCountry());
+            System.out.println(brand.getBrandYearOfFundation());
         }
     }
 

@@ -6,6 +6,7 @@ import Models.Coche;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
 
 
@@ -166,10 +167,72 @@ public class FileManagement implements MagementInterface {
             bufferedWriter.append("\n").append(String.valueOf(yearOfFundation));
             bufferedWriter.append("\n#\n");
             bufferedWriter.close();
+            setLastBrandIDToConfig();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void deleteBrand(String brandName) {
+        HashMap<String, Brand> brandHashSet= this.readBrands();
+        HashMap<String, Coche> cochesHashMap = new HashMap<>();
+        for (Coche coche: this.read()) {
+            cochesHashMap.put(coche.getMarca().getBrandName(), coche);
+        }
+        if (brandHashSet.containsKey(brandName)) {
+            brandHashSet.remove(brandName);
+            cochesHashMap.remove(brandName);
+            HashMap<Integer, Coche> cochesHashMapToDelete = new HashMap<>();
+            for (Coche coche : cochesHashMap.values()) {
+                cochesHashMapToDelete.put(coche.getID(), coche);
+            }
+            saveChangesOnFile(cochesHashMapToDelete);
+            saveChangesOnFileBrand(brandHashSet);
+        }else {
+            System.out.println("No existe esa marca");
+        }
+    }
+
+    @Override
+    public void updateBrand(String brandName, Brand brand) {
+        HashMap<String, Brand> brandHashSet= this.readBrands();
+        HashMap<String, Coche> cochesHashMap = new HashMap<>();
+        for (Coche coche: this.read()) {
+            cochesHashMap.put(coche.getMarca().getBrandName(), coche);
+        }
+        if (brandHashSet.containsKey(brandName)) {
+            brand.setIdBrand(brandHashSet.get(brandName).getIdBrand());
+            brandHashSet.replace(brandName, brand);
+            HashMap<Integer, Coche> cochesHashMapToUpdate = new HashMap<>();
+            for (Coche coche : cochesHashMap.values()) {
+                if (coche.getMarca().getBrandName().equals(brandName))
+                    coche.setMarca(brand);
+                cochesHashMapToUpdate.put(coche.getID(), coche);
+            }
+            saveChangesOnFile(cochesHashMapToUpdate);
+            saveChangesOnFileBrand(brandHashSet);
+        }else {
+            System.out.println("No existe esa marca");
+        }
+    }
+
+    private void saveChangesOnFileBrand(HashMap<String, Brand> brandHashMap){
+        try {
+            FileWriter fileWriter = new FileWriter("brands.txt", false);
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            for (Brand brand : brandHashMap.values()) {
+                bufferedWriter.append(String.valueOf(brand.getIdBrand()));
+                bufferedWriter.append("\n").append(brand.getBrandName());
+                bufferedWriter.append("\n").append(brand.getBrandCountry());
+                bufferedWriter.append("\n").append(String.valueOf(brand.getBrandYearOfFundation()));
+                bufferedWriter.append("\n#\n");
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void saveChangesOnFile(HashMap<Integer, Coche> cochesHashMap) {
@@ -259,7 +322,6 @@ public class FileManagement implements MagementInterface {
 
     private void readConfig(Properties propiedades) {
         try {
-
             archivo = new File("config.ini");
             if (archivo.exists()) {
                 fr = new FileReader(archivo);
@@ -270,11 +332,5 @@ public class FileManagement implements MagementInterface {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        MagementInterface emisor = new FileManagement("coches.txt", true);
-        emisor.addBrand("Peugeot", "France", 1956);
-        System.out.println(emisor.readBrands().toString());
     }
 }

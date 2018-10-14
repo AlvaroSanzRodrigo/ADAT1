@@ -19,4 +19,8 @@ public interface MagementInterface {
     HashMap<String, Brand> readBrands();
 
     void addBrand(String brandName, String brandCountry, int yearOfFundation);
+
+    void deleteBrand(String brandName);
+
+    void updateBrand(String brandName, Brand brand);
 }

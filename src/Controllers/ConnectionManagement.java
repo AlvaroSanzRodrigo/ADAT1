@@ -182,4 +182,31 @@ public class ConnectionManagement implements MagementInterface {
         }
 
     }
+
+    @Override
+    public void deleteBrand(String brandName) {
+        try {
+            PreparedStatement pstmt = conexion.prepareStatement("DELETE FROM coches WHERE coches.marca = ?");
+            PreparedStatement preparedStatementBrands = conexion.prepareStatement("DELETE FROM marca WHERE marca.brandName= ?");
+            pstmt.setString(1, brandName);
+            preparedStatementBrands.setString(1, brandName);
+            pstmt.executeUpdate();
+            preparedStatementBrands.executeUpdate();
+            pstmt.close();
+        } catch (SQLException s) {
+            System.err.println("Error en la consulta sql, porfavor vuelve a intentarlo");
+        }
+    }
+
+    @Override
+    public void updateBrand(String brandName, Brand brand) {
+        try{
+            PreparedStatement preparedStatement = conexion.prepareStatement("UPDATE `marca` SET  `brandCountry` = ?, `brandYearOfFundation` = ? WHERE `marca`.brandName = ?");
+            preparedStatement.setString(1,brand.getBrandCountry());
+            preparedStatement.setInt(2, brand.getBrandYearOfFundation());
+            preparedStatement.setString(3, brandName);
+        } catch (SQLException e) {
+            System.err.println("Error en la consulta SQL");
+        }
+    }
 }

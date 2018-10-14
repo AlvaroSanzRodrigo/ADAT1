@@ -25,5 +25,4 @@ public class Controller {
     public void delete(MagementInterface emisor, int ID){
         emisor.delete(ID);
     }
-
 }
