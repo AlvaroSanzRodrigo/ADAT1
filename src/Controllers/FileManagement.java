@@ -312,7 +312,6 @@ public class FileManagement implements MagementInterface {
         }
     }
 
-
     public void setLastIDToConfig(){
         Properties propiedades = new Properties();
         readConfig(propiedades);

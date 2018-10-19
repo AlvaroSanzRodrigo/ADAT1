@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="Models.Coche" table="coches">
+        <id name="ID" type="int">
+            <column name="ID"/>
+            <generator class="increment"/>
+        </id>
+
+        <property name="modelo" type="java.lang.String">
+            <column name="modelo" length="50" not-null="true"/>
+        </property>
+
+        <property name="cavallaje" type="int">
+            <column name="cavallaje" length="50" not-null="true"/>
+        </property>
+
+        <property name="color" type="java.lang.String">
+            <column name="color" length="50" not-null="true"/>
+        </property>
+
+        <many-to-one name="marca" column="idBrand" class="Models.Brand"
+                     not-null="true"/>
+
+    </class>
+</hibernate-mapping>

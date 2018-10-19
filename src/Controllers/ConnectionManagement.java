@@ -45,7 +45,7 @@ public class ConnectionManagement implements MagementInterface {
 
         //conexion
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
+            Class.forName("com.mysql.jdbc.Driver");
             conexion = DriverManager.getConnection(url, login, pwd);
             System.out.println(" - Conexión con MySQL establecida -");
         } catch (Exception e) {

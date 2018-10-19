@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+    <class name="Models.Brand" table="marca">
+        <id name="idBrand" type="int">
+            <column name="idBrand"/>
+            <generator class="increment"/>
+        </id>
+
+        <property name="brandName" type="java.lang.String">
+            <column name="brandName" length="50" not-null="true"/>
+        </property>
+
+        <property name="brandCountry" type="java.lang.String">
+            <column name="brandCountry" length="50" not-null="true"/>
+        </property>
+
+        <property name="brandYearOfFundation" type="int">
+            <column name="brandYearOfFundation" length="50" not-null="true"/>
+        </property>
+
+    </class>
+</hibernate-mapping>
