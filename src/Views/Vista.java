@@ -1,9 +1,6 @@
 package Views;
 
-import Controllers.ConnectionManagement;
-import Controllers.Controller;
-import Controllers.FileManagement;
-import Controllers.MagementInterface;
+import Controllers.*;
 import Models.Brand;
 import Models.Coche;
 
@@ -24,7 +21,7 @@ public class Vista {
             System.out.println("¿De donde quiere obtener los datos?");
             System.out.println("1. Fichero");
             System.out.println("2. BBDD");
-            System.out.println("3. Configuracion");
+            System.out.println("3. Hibernate");
 
             try {
                 int option = Integer.parseInt(in.nextLine());
@@ -38,30 +35,11 @@ public class Vista {
                         emisor = new ConnectionManagement();
                         break;
                     case 3:
-                        System.out.println("1. Nueva marca");
-                        System.out.println("2. Nuevo archivo");
+                        System.out.println(".:Hibernate:.");
                         try {
-                            int optionConfigurations = Integer.parseInt(in.nextLine());
-                            switch (optionConfigurations) {
-                                case 1:
-                                    System.out.println("Introduzca nombre de la marca");
-                                    String brandName = in.nextLine();
-                                    System.out.println("Introduzca pais de procedencia");
-                                    String brandCountry = in.nextLine();
-                                    System.out.println("Introduzca año de fundación");
-                                    int yearOfFundation = Integer.parseInt(in.nextLine());
-                                    try {
-                                        emisor = new ConnectionManagement();
-                                        ((ConnectionManagement) emisor).addBrand(brandName, brandCountry, yearOfFundation);
-                                    } catch (Exception e) {
-                                        System.err.println("Error al introducir marca nueva");
-                                    }
-                                    break;
-                                case 2:
-                                    break;
-                            }
+                            emisor = new HibernateManager();
                         } catch (Exception e) {
-                            System.err.println("Introduzca numero de opción");
+                            System.err.println("Error de conexion");
                         }
                         break;
                 }
@@ -88,6 +66,7 @@ public class Vista {
                                     System.out.println("¿Sobre que almacenamiento?");
                                     System.out.println("1. A BBDD");
                                     System.out.println("2. A Fichero");
+                                    System.out.println("3. A Hibernate");
                                     int optionFilesToOther = 0;
                                     try {
                                         optionFilesToOther = Integer.parseInt(in.nextLine());
@@ -117,6 +96,10 @@ public class Vista {
                                                 } catch (Exception e) {
                                                     System.err.println("Escoge si o no");
                                                 }
+                                                break;
+                                            case 3:
+                                                receptor = new HibernateManager();
+                                                controller.put(emisor, receptor);
                                                 break;
                                         }
                                     } catch (Exception e) {
