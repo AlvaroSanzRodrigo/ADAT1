@@ -29,5 +29,8 @@
     <orderEntry type="library" name="jboss-logging-3.3.0.Final" level="project" />
     <orderEntry type="library" name="mysql-connector-java-5.1.22-bin" level="project" />
     <orderEntry type="library" name="hibernate-commons-annotations-5.0.4.Final" level="project" />
+    <orderEntry type="library" name="json_simple-1.1" level="project" />
+    <orderEntry type="library" name="okhttp-2.6.0" level="project" />
+    <orderEntry type="library" name="okio-1.6.0" level="project" />
   </component>
 </module>
