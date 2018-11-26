@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class JSONController implements MagementInterface {
 
     ApiRequests encargadoPeticiones;
-    private String SERVER_PATH, GET_CAR, SET_CAR; // Datos de la conexion
+    private String SERVER_PATH, GET_CAR, SET_CAR, GET_BRAND; // Datos de la conexion
 
     public JSONController() {
 
@@ -21,6 +21,7 @@ public class JSONController implements MagementInterface {
         SERVER_PATH = "http://localhost/Sanz/ADAT_1_JSON/";
         GET_CAR = "readCars.php";
         SET_CAR = "addCar.php";
+        GET_BRAND = "readBrands.php";
 
     }
 
@@ -145,8 +146,8 @@ public class JSONController implements MagementInterface {
                             cavallaje = Integer.parseInt(row.get("cavallaje").toString());
                             id = Integer.parseInt(row.get("ID").toString());
                             color = row.get("color").toString();
-                            //marca = this.readBrands().get(row.get("idBrand").toString());
-                            marca = new Brand();
+                            marca = this.readBrandsById().get(Integer.parseInt(row.get("idBrand").toString()));
+                            //marca = new Brand();
 
                             newCoche = new Coche(id, marca, modelo, cavallaje, color);
 
@@ -195,7 +196,155 @@ public class JSONController implements MagementInterface {
 
     @Override
     public HashMap<String, Brand> readBrands() {
-        return null;
+        HashMap<String, Brand> marcasHasMap = new HashMap<>();
+
+        try {
+
+            System.out.println("---------- Leemos datos de JSON --------------------");
+
+
+            System.out.println("Lanzamos peticion JSON para coches");
+            String url = SERVER_PATH + GET_BRAND; // Sacadas de configuracion
+
+            System.out.println("La url a la que lanzamos la petici�n es " +
+                    url); // Traza para pruebas
+
+            String response = encargadoPeticiones.getRequest(url);
+
+            // System.out.println(response); // Traza para pruebas
+
+            // Parseamos la respuesta y la convertimos en un JSONObject
+            JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
+
+            if (respuesta == null) { // Si hay alg�n error de parseo (json
+                // incorrecto porque hay alg�n caracter
+                // raro, etc.) la respuesta ser� null
+                System.out.println("El json recibido no es correcto");
+            } else { // El JSON recibido es correcto
+                // Sera "ok" si todo ha ido bien o "error" si hay alg�n problema
+                String estado = (String) respuesta.get("state");
+
+                if (estado.equals("ok")) {
+                    JSONArray array = (JSONArray) respuesta.get("marcas");
+
+                    if (array.size() > 0) {
+
+                        // Declaramos variables
+                        Coche newCoche;
+                        int id, cavallaje;
+                        Brand marca;
+                        String modelo, color;
+
+                        for (int i = 0; i < array.size(); i++) {
+                            JSONObject row = (JSONObject) array.get(i);
+                            marca = new Brand(Integer.parseInt(row.get("idBrand").toString()), row.get("brandName").toString(), row.get("brandCountry").toString(), Integer.parseInt(row.get("brandYearOfFundation").toString()));
+                            marcasHasMap.put(row.get("brandName").toString(), marca);
+                        }
+
+                        System.out.println("Acceso JSON Remoto - Leidos datos correctamente y generado ArrayList");
+                        System.out.println();
+
+                    } else { // El array de jugadores est� vac�o
+                        System.out.println("Acceso JSON Remoto - No hay datos que tratar");
+                        System.out.println();
+                    }
+
+                } else { // Hemos recibido el json pero en el estado se nos
+                    // indica que ha habido alg�n error
+
+                    System.out.println("Ha ocurrido un error en la busqueda de datos");
+                    System.out.println("Error: " + (String) respuesta.get("error"));
+                    System.out.println("Consulta: " + (String) respuesta.get("query"));
+
+                    System.exit(-1);
+
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Ha ocurrido un error en la busqueda de datos");
+
+            e.printStackTrace();
+
+            System.exit(-1);
+        }
+        return marcasHasMap;
+    }
+
+    public HashMap<Integer, Brand> readBrandsById(){
+        HashMap<Integer, Brand> marcasHasMap = new HashMap<>();
+
+        try {
+
+            System.out.println("---------- Leemos datos de JSON --------------------");
+
+
+            System.out.println("Lanzamos peticion JSON para coches");
+            String url = SERVER_PATH + GET_BRAND; // Sacadas de configuracion
+
+            System.out.println("La url a la que lanzamos la petici�n es " +
+                    url); // Traza para pruebas
+
+            String response = encargadoPeticiones.getRequest(url);
+
+            // System.out.println(response); // Traza para pruebas
+
+            // Parseamos la respuesta y la convertimos en un JSONObject
+            JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
+
+            if (respuesta == null) { // Si hay alg�n error de parseo (json
+                // incorrecto porque hay alg�n caracter
+                // raro, etc.) la respuesta ser� null
+                System.out.println("El json recibido no es correcto");
+            } else { // El JSON recibido es correcto
+                // Sera "ok" si todo ha ido bien o "error" si hay alg�n problema
+                String estado = (String) respuesta.get("state");
+
+                if (estado.equals("ok")) {
+                    JSONArray array = (JSONArray) respuesta.get("marcas");
+
+                    if (array.size() > 0) {
+
+                        // Declaramos variables
+                        Coche newCoche;
+                        int id, cavallaje;
+                        Brand marca;
+                        String modelo, color;
+
+                        for (int i = 0; i < array.size(); i++) {
+                            JSONObject row = (JSONObject) array.get(i);
+                            marca = new Brand(Integer.parseInt(row.get("idBrand").toString()), row.get("brandName").toString(), row.get("brandCountry").toString(), Integer.parseInt(row.get("brandYearOfFundation").toString()));
+                            marcasHasMap.put(Integer.parseInt(row.get("idBrand").toString()), marca);
+                        }
+
+                        System.out.println("Acceso JSON Remoto - Leidos datos correctamente y generado ArrayList");
+                        System.out.println();
+
+                    } else { // El array de jugadores est� vac�o
+                        System.out.println("Acceso JSON Remoto - No hay datos que tratar");
+                        System.out.println();
+                    }
+
+                } else { // Hemos recibido el json pero en el estado se nos
+                    // indica que ha habido alg�n error
+
+                    System.out.println("Ha ocurrido un error en la busqueda de datos");
+                    System.out.println("Error: " + (String) respuesta.get("error"));
+                    System.out.println("Consulta: " + (String) respuesta.get("query"));
+
+                    System.exit(-1);
+
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Ha ocurrido un error en la busqueda de datos");
+
+            e.printStackTrace();
+
+            System.exit(-1);
+        }
+        return marcasHasMap;
     }
 
     @Override
@@ -214,17 +363,23 @@ public class JSONController implements MagementInterface {
     }
 
     public static void main(String[] args) {
-        ArrayList<Coche> cocheArrayList = new ArrayList<>();
         JSONController jsonController = new JSONController();
-        Brand ds = new Brand(3, "DS", "France", 2009);
-        Coche coche = new Coche(1, ds, "Pruebita", 2, "Rojo");
+        ArrayList<Coche> cocheArrayList = jsonController.read();
+        //    Brand ds = new Brand(3, "DS", "France", 2009);
+  //      Coche coche = new Coche(1, ds, "Pruebita", 2, "Rojo");
 
-        cocheArrayList.add(coche);
-
-        jsonController.write(cocheArrayList);
-        for (Coche c : jsonController.read()) {
-            System.out.println(c.toString());
+//        cocheArrayList.add(coche);
+        HashMap<String, Brand> readmarcas;
+        readmarcas = jsonController.readBrands();
+        for (Brand brand : readmarcas.values()) {
+            System.out.println(brand.toString());
         }
+
+        for (Coche coche : cocheArrayList) {
+            System.out.println(coche.toString());
+        }
+
+
 
     }
 }
