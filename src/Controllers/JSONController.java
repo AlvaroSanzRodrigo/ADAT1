@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class JSONController implements MagementInterface {
 
     ApiRequests encargadoPeticiones;
-    private String SERVER_PATH, GET_CAR, SET_CAR, GET_BRAND, DELETE_CAR; // Datos de la conexion
+    private String SERVER_PATH, GET_CAR, SET_CAR, GET_BRAND, DELETE_CAR, SET_BRAND; // Datos de la conexion
 
     public JSONController() {
 
@@ -23,6 +23,7 @@ public class JSONController implements MagementInterface {
         SET_CAR = "addCar.php";
         GET_BRAND = "readBrands.php";
         DELETE_CAR = "deleteCar.php";
+        SET_BRAND = "addBrand.php";
 
     }
 
@@ -275,10 +276,7 @@ public class JSONController implements MagementInterface {
                     if (array.size() > 0) {
 
                         // Declaramos variables
-                        Coche newCoche;
-                        int id, cavallaje;
                         Brand marca;
-                        String modelo, color;
 
                         for (int i = 0; i < array.size(); i++) {
                             JSONObject row = (JSONObject) array.get(i);
@@ -349,12 +347,7 @@ public class JSONController implements MagementInterface {
                     JSONArray array = (JSONArray) respuesta.get("marcas");
 
                     if (array.size() > 0) {
-
-                        // Declaramos variables
-                        Coche newCoche;
-                        int id, cavallaje;
                         Brand marca;
-                        String modelo, color;
 
                         for (int i = 0; i < array.size(); i++) {
                             JSONObject row = (JSONObject) array.get(i);
@@ -394,6 +387,49 @@ public class JSONController implements MagementInterface {
 
     @Override
     public void addBrand(String brandName, String brandCountry, int yearOfFundation) {
+            try {
+                JSONObject objCoche = new JSONObject();
+                JSONObject objPeticion = new JSONObject();
+
+                objCoche.put("brandName", brandName);
+                objCoche.put("brandCountry", brandCountry);
+                objCoche.put("brandYearOfFundation", yearOfFundation);
+
+                // Tenemos el jugador como objeto JSON. Lo a�adimos a una peticion
+                // Lo transformamos a string y llamamos al
+                // encargado de peticiones para que lo envie al PHP
+                objPeticion.put("petition", "add");
+                objPeticion.put("brand", objCoche);
+
+                String json = objPeticion.toJSONString();
+
+                System.out.println("Lanzamos peticion JSON para almacenar un jugador");
+
+                String url = SERVER_PATH + SET_BRAND;
+
+                System.out.println("La url a la que lanzamos la petici�n es " + url);
+                System.out.println("El json que enviamos es: ");
+                System.out.println(json);
+                //System.exit(-1);
+
+                String response = encargadoPeticiones.postRequest(url, json);
+
+                System.out.println("El json que recibimos es: ");
+
+                System.out.println(response); // Traza para pruebas
+
+
+                // Parseamos la respuesta y la convertimos en un JSONObject
+                JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
+
+                modificationResponse(respuesta);
+            } catch (Exception e) {
+                System.out.println(
+                        "Excepcion desconocida. Traza de error comentada en el mtodo 'annadirBrand' de la clase JSON REMOTO");
+                // e.printStackTrace();
+                System.out.println("Fin ejecucion");
+                System.exit(-1);
+            }
 
     }
 
@@ -424,8 +460,7 @@ public class JSONController implements MagementInterface {
         //    System.out.println(coche.toString());
         //}
 
-        jsonController.delete(5);
-
+        //jsonController.delete(5);
+    jsonController.addBrand("Issss", "Germany", 1902);
     }
 }
-
