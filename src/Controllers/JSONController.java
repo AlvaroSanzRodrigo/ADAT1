@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class JSONController implements MagementInterface {
 
     ApiRequests encargadoPeticiones;
-    private String SERVER_PATH, GET_CAR, SET_CAR, GET_BRAND; // Datos de la conexion
+    private String SERVER_PATH, GET_CAR, SET_CAR, GET_BRAND, DELETE_CAR; // Datos de la conexion
 
     public JSONController() {
 
@@ -22,6 +22,7 @@ public class JSONController implements MagementInterface {
         GET_CAR = "readCars.php";
         SET_CAR = "addCar.php";
         GET_BRAND = "readBrands.php";
+        DELETE_CAR = "deleteCar.php";
 
     }
 
@@ -65,29 +66,7 @@ public class JSONController implements MagementInterface {
                 // Parseamos la respuesta y la convertimos en un JSONObject
                 JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
 
-                if (respuesta == null) { // Si hay alg�n error de parseo (json
-                    // incorrecto porque hay alg�n caracter
-                    // raro, etc.) la respuesta ser� null
-                    System.out.println("El json recibido no es correcto. Finaliza la ejecuci�n");
-                    System.exit(-1);
-                } else { // El JSON recibido es correcto
-
-                    // Sera "ok" si todo ha ido bien o "error" si hay alg�n problema
-                    String estado = (String) respuesta.get("estado");
-                    if (estado.equals("ok")) {
-                        System.out.println("Almacenado jugador enviado por JSON Remoto");
-
-                    } else { // Hemos recibido el json pero en el estado se nos
-                        // indica que ha habido alg�n error
-
-                        System.out.println("Acceso JSON REMOTO - Error al almacenar los datos");
-                        System.out.println("Error: " + (String) respuesta.get("error"));
-                        System.out.println("Consulta: " + (String) respuesta.get("query"));
-
-                        System.exit(-1);
-
-                    }
-                }
+                modificationResponse(respuesta);
             } catch (Exception e) {
                 System.out.println(
                         "Excepcion desconocida. Traza de error comentada en el mtodo 'annadirJugador' de la clase JSON REMOTO");
@@ -186,7 +165,73 @@ public class JSONController implements MagementInterface {
 
     @Override
     public void delete(int ID) {
+        try {
+            JSONObject objCoche = new JSONObject();
+            JSONObject objPeticion = new JSONObject();
 
+            objCoche.put("idCoche", ID);
+
+            // Lo transformamos a string y llamamos al
+            // encargado de peticiones para que lo envie al PHP
+            objPeticion.put("petition", "delete");
+            objPeticion.put("idCoche", objCoche);
+
+            String json = objPeticion.toJSONString();
+
+            System.out.println("Lanzamos peticion JSON para almacenar un jugador");
+
+            String url = SERVER_PATH + DELETE_CAR;
+
+            System.out.println("La url a la que lanzamos la petici�n es " + url);
+            System.out.println("El json que enviamos es: ");
+            System.out.println(json);
+            //System.exit(-1);
+
+            String response = encargadoPeticiones.postRequest(url, json);
+
+            System.out.println("El json que recibimos es: ");
+
+            System.out.println(response); // Traza para pruebas
+
+
+            // Parseamos la respuesta y la convertimos en un JSONObject
+            JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
+
+            modificationResponse(respuesta);
+
+        } catch (Exception e) {
+            System.out.println(
+                    "Excepcion desconocida. Traza de error comentada en el mtodo 'annadirJugador' de la clase JSON REMOTO");
+            // e.printStackTrace();
+            System.out.println("Fin ejecucion");
+            System.exit(-1);
+        }
+}
+
+    private void modificationResponse(JSONObject respuesta) {
+        if (respuesta == null) { // Si hay alg�n error de parseo (json
+            // incorrecto porque hay alg�n caracter
+            // raro, etc.) la respuesta ser� null
+            System.out.println("El json recibido no es correcto. Finaliza la ejecuci�n");
+            System.exit(-1);
+        } else { // El JSON recibido es correcto
+
+            // Sera "ok" si todo ha ido bien o "error" si hay alg�n problema
+            String estado = (String) respuesta.get("estado");
+            if (estado.equals("ok")) {
+                System.out.println("Almacenado jugador enviado por JSON Remoto");
+
+            } else { // Hemos recibido el json pero en el estado se nos
+                // indica que ha habido alg�n error
+
+                System.out.println("Acceso JSON REMOTO - Error al almacenar los datos");
+                System.out.println("Error: " + (String) respuesta.get("error"));
+                System.out.println("Consulta: " + (String) respuesta.get("query"));
+
+                System.exit(-1);
+
+            }
+        }
     }
 
     @Override
@@ -271,7 +316,7 @@ public class JSONController implements MagementInterface {
         return marcasHasMap;
     }
 
-    public HashMap<Integer, Brand> readBrandsById(){
+    public HashMap<Integer, Brand> readBrandsById() {
         HashMap<Integer, Brand> marcasHasMap = new HashMap<>();
 
         try {
@@ -366,20 +411,20 @@ public class JSONController implements MagementInterface {
         JSONController jsonController = new JSONController();
         ArrayList<Coche> cocheArrayList = jsonController.read();
         //    Brand ds = new Brand(3, "DS", "France", 2009);
-  //      Coche coche = new Coche(1, ds, "Pruebita", 2, "Rojo");
+        //      Coche coche = new Coche(1, ds, "Pruebita", 2, "Rojo");
 
 //        cocheArrayList.add(coche);
-        HashMap<String, Brand> readmarcas;
-        readmarcas = jsonController.readBrands();
-        for (Brand brand : readmarcas.values()) {
-            System.out.println(brand.toString());
-        }
+      //  HashMap<String, Brand> readmarcas;
+        //readmarcas = jsonController.readBrands();
+        //for (Brand brand : readmarcas.values()) {
+        //    System.out.println(brand.toString());
+        //}
 
-        for (Coche coche : cocheArrayList) {
-            System.out.println(coche.toString());
-        }
+        //for (Coche coche : cocheArrayList) {
+        //    System.out.println(coche.toString());
+        //}
 
-
+        jsonController.delete(5);
 
     }
 }
