@@ -6,8 +6,13 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 
 public class JSONController implements MagementInterface {
 
@@ -16,20 +21,39 @@ public class JSONController implements MagementInterface {
     private String DELETE_BRAND;
     private String UPDATE_CAR;
     private String UPDATE_BRAND;
+    private File archivo = null;
+    private FileReader fr = null;
+    private BufferedReader br = null;
 
     public JSONController() {
 
         encargadoPeticiones = new ApiRequests();
+        Properties propiedades = new Properties();
+        try {
 
-        SERVER_PATH = "http://localhost/Sanz/ADAT_1_JSON/";
-        GET_CAR = "readCars.php";
-        SET_CAR = "addCar.php";
-        GET_BRAND = "readBrands.php";
-        DELETE_CAR = "deleteCar.php";
-        SET_BRAND = "addBrand.php";
-        DELETE_BRAND = "deleteBrand.php";
-        UPDATE_CAR = "updateCar.php";
-        UPDATE_BRAND = "updateBrand.php";
+            archivo = new File("jsonconfig.ini");
+            if (archivo.exists()) {
+                fr = new FileReader(archivo);
+                br = new BufferedReader(fr);
+                propiedades.load(fr);
+                // obtenemos las propiedades y las imprimimos
+                SERVER_PATH = propiedades.getProperty("SERVER_PATH");
+                GET_CAR = propiedades.getProperty("GET_CAR");
+                SET_CAR = propiedades.getProperty("SET_CAR");
+                GET_BRAND = propiedades.getProperty("GET_BRAND");
+                DELETE_CAR = propiedades.getProperty("DELETE_CAR");
+                GET_BRAND = propiedades.getProperty("GET_BRAND");
+                SET_BRAND = propiedades.getProperty("SET_BRAND");
+                UPDATE_CAR = propiedades.getProperty("UPDATE_CAR");
+                DELETE_BRAND = propiedades.getProperty("DELETE_BRAND");
+                UPDATE_BRAND = propiedades.getProperty("UPDATE_BRAND");
+
+
+            } else
+                System.err.println("Fichero no encontrado");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
     @Override
@@ -577,8 +601,8 @@ public class JSONController implements MagementInterface {
     public static void main(String[] args) {
         JSONController jsonController = new JSONController();
         ArrayList<Coche> cocheArrayList = jsonController.read();
-           Brand ds = new Brand(3, "DS", "France", 2009);
-            jsonController.updateBrand("Masserati", ds);
+        Brand ds = new Brand(3, "DS", "France", 2009);
+        jsonController.updateBrand("Masserati", ds);
 
 //        cocheArrayList.add(coche);
         //  HashMap<String, Brand> readmarcas;
@@ -587,9 +611,9 @@ public class JSONController implements MagementInterface {
         //    System.out.println(brand.toString());
         //}
 
-        //for (Coche coche : cocheArrayList) {
-        //    System.out.println(coche.toString());
-        //}
+        for (Coche coche : cocheArrayList) {
+            System.out.println(coche.toString());
+        }
 
         //jsonController.delete(5);
         //jsonController.deleteBrand("Issss");
