@@ -14,6 +14,7 @@ public class JSONController implements MagementInterface {
     ApiRequests encargadoPeticiones;
     private String SERVER_PATH, GET_CAR, SET_CAR, GET_BRAND, DELETE_CAR, SET_BRAND; // Datos de la conexion
     private String DELETE_BRAND;
+    private String UPDATE_CAR;
 
     public JSONController() {
 
@@ -26,6 +27,7 @@ public class JSONController implements MagementInterface {
         DELETE_CAR = "deleteCar.php";
         SET_BRAND = "addBrand.php";
         DELETE_BRAND = "deleteBrand.php";
+        UPDATE_CAR = "updateCar.php";
 
     }
 
@@ -209,7 +211,7 @@ public class JSONController implements MagementInterface {
             System.out.println("Fin ejecucion");
             System.exit(-1);
         }
-}
+    }
 
     private void modificationResponse(JSONObject respuesta) {
         if (respuesta == null) { // Si hay alg�n error de parseo (json
@@ -239,7 +241,51 @@ public class JSONController implements MagementInterface {
 
     @Override
     public void update(Coche c, int ID) {
+        try {
+            JSONObject objCoche = new JSONObject();
+            JSONObject objPeticion = new JSONObject();
 
+            objCoche.put("idCoche", ID);
+            objCoche.put("modelo", c.getModelo());
+            objCoche.put("cavallaje", c.getCavallaje());
+            objCoche.put("color", c.getColor());
+            objCoche.put("idBrand", c.getMarca().getIdBrand());
+
+            // Tenemos el jugador como objeto JSON. Lo a�adimos a una peticion
+            // Lo transformamos a string y llamamos al
+            // encargado de peticiones para que lo envie al PHP
+            objPeticion.put("petition", "update");
+            objPeticion.put("coche", objCoche);
+
+            String json = objPeticion.toJSONString();
+
+            System.out.println("Lanzamos peticion JSON para updatear un coche");
+
+            String url = SERVER_PATH + UPDATE_CAR;
+
+            System.out.println("La url a la que lanzamos la petici�n es " + url);
+            System.out.println("El json que enviamos es: ");
+            System.out.println(json);
+            //System.exit(-1);
+
+            String response = encargadoPeticiones.postRequest(url, json);
+
+            System.out.println("El json que recibimos es: ");
+
+            System.out.println(response); // Traza para pruebas
+
+
+            // Parseamos la respuesta y la convertimos en un JSONObject
+            JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
+
+            modificationResponse(respuesta);
+        } catch (Exception e) {
+            System.out.println(
+                    "Excepcion desconocida. Traza de error comentada en el mtodo 'updateCar()' de la clase JSON REMOTO");
+            // e.printStackTrace();
+            System.out.println("Fin ejecucion");
+            System.exit(-1);
+        }
     }
 
     @Override
@@ -389,49 +435,49 @@ public class JSONController implements MagementInterface {
 
     @Override
     public void addBrand(String brandName, String brandCountry, int yearOfFundation) {
-            try {
-                JSONObject objCoche = new JSONObject();
-                JSONObject objPeticion = new JSONObject();
+        try {
+            JSONObject objCoche = new JSONObject();
+            JSONObject objPeticion = new JSONObject();
 
-                objCoche.put("brandName", brandName);
-                objCoche.put("brandCountry", brandCountry);
-                objCoche.put("brandYearOfFundation", yearOfFundation);
+            objCoche.put("brandName", brandName);
+            objCoche.put("brandCountry", brandCountry);
+            objCoche.put("brandYearOfFundation", yearOfFundation);
 
-                // Tenemos el jugador como objeto JSON. Lo a�adimos a una peticion
-                // Lo transformamos a string y llamamos al
-                // encargado de peticiones para que lo envie al PHP
-                objPeticion.put("petition", "add");
-                objPeticion.put("brand", objCoche);
+            // Tenemos el jugador como objeto JSON. Lo a�adimos a una peticion
+            // Lo transformamos a string y llamamos al
+            // encargado de peticiones para que lo envie al PHP
+            objPeticion.put("petition", "add");
+            objPeticion.put("brand", objCoche);
 
-                String json = objPeticion.toJSONString();
+            String json = objPeticion.toJSONString();
 
-                System.out.println("Lanzamos peticion JSON para almacenar un jugador");
+            System.out.println("Lanzamos peticion JSON para almacenar un jugador");
 
-                String url = SERVER_PATH + SET_BRAND;
+            String url = SERVER_PATH + SET_BRAND;
 
-                System.out.println("La url a la que lanzamos la petici�n es " + url);
-                System.out.println("El json que enviamos es: ");
-                System.out.println(json);
-                //System.exit(-1);
+            System.out.println("La url a la que lanzamos la petici�n es " + url);
+            System.out.println("El json que enviamos es: ");
+            System.out.println(json);
+            //System.exit(-1);
 
-                String response = encargadoPeticiones.postRequest(url, json);
+            String response = encargadoPeticiones.postRequest(url, json);
 
-                System.out.println("El json que recibimos es: ");
+            System.out.println("El json que recibimos es: ");
 
-                System.out.println(response); // Traza para pruebas
+            System.out.println(response); // Traza para pruebas
 
 
-                // Parseamos la respuesta y la convertimos en un JSONObject
-                JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
+            // Parseamos la respuesta y la convertimos en un JSONObject
+            JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
 
-                modificationResponse(respuesta);
-            } catch (Exception e) {
-                System.out.println(
-                        "Excepcion desconocida. Traza de error comentada en el mtodo 'annadirBrand' de la clase JSON REMOTO");
-                // e.printStackTrace();
-                System.out.println("Fin ejecucion");
-                System.exit(-1);
-            }
+            modificationResponse(respuesta);
+        } catch (Exception e) {
+            System.out.println(
+                    "Excepcion desconocida. Traza de error comentada en el mtodo 'annadirBrand' de la clase JSON REMOTO");
+            // e.printStackTrace();
+            System.out.println("Fin ejecucion");
+            System.exit(-1);
+        }
 
     }
 
@@ -488,11 +534,11 @@ public class JSONController implements MagementInterface {
     public static void main(String[] args) {
         JSONController jsonController = new JSONController();
         ArrayList<Coche> cocheArrayList = jsonController.read();
-        //    Brand ds = new Brand(3, "DS", "France", 2009);
-        //      Coche coche = new Coche(1, ds, "Pruebita", 2, "Rojo");
-
+           Brand ds = new Brand(3, "DS", "France", 2009);
+           Coche coche = new Coche(1, ds, "PruebitaGuapa", 2, "Rojo");
+            jsonController.update(coche, 6);
 //        cocheArrayList.add(coche);
-      //  HashMap<String, Brand> readmarcas;
+        //  HashMap<String, Brand> readmarcas;
         //readmarcas = jsonController.readBrands();
         //for (Brand brand : readmarcas.values()) {
         //    System.out.println(brand.toString());
@@ -503,6 +549,6 @@ public class JSONController implements MagementInterface {
         //}
 
         //jsonController.delete(5);
-    jsonController.deleteBrand("Issss");
+        //jsonController.deleteBrand("Issss");
     }
 }
