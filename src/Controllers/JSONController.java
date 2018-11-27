@@ -13,6 +13,7 @@ public class JSONController implements MagementInterface {
 
     ApiRequests encargadoPeticiones;
     private String SERVER_PATH, GET_CAR, SET_CAR, GET_BRAND, DELETE_CAR, SET_BRAND; // Datos de la conexion
+    private String DELETE_BRAND;
 
     public JSONController() {
 
@@ -24,6 +25,7 @@ public class JSONController implements MagementInterface {
         GET_BRAND = "readBrands.php";
         DELETE_CAR = "deleteCar.php";
         SET_BRAND = "addBrand.php";
+        DELETE_BRAND = "deleteBrand.php";
 
     }
 
@@ -435,7 +437,47 @@ public class JSONController implements MagementInterface {
 
     @Override
     public void deleteBrand(String brandName) {
+        try {
+            JSONObject objCoche = new JSONObject();
+            JSONObject objPeticion = new JSONObject();
 
+            objCoche.put("idBrand", brandName);
+
+            // Lo transformamos a string y llamamos al
+            // encargado de peticiones para que lo envie al PHP
+            objPeticion.put("petition", "delete");
+            objPeticion.put("idBrand", objCoche);
+
+            String json = objPeticion.toJSONString();
+
+            System.out.println("Lanzamos peticion JSON para eliminar una marca");
+
+            String url = SERVER_PATH + DELETE_BRAND;
+
+            System.out.println("La url a la que lanzamos la petici�n es " + url);
+            System.out.println("El json que enviamos es: ");
+            System.out.println(json);
+            //System.exit(-1);
+
+            String response = encargadoPeticiones.postRequest(url, json);
+
+            System.out.println("El json que recibimos es: ");
+
+            System.out.println(response); // Traza para pruebas
+
+
+            // Parseamos la respuesta y la convertimos en un JSONObject
+            JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
+
+            modificationResponse(respuesta);
+
+        } catch (Exception e) {
+            System.out.println(
+                    "Excepcion desconocida. Traza de error comentada en el mtodo 'annadirJugador' de la clase JSON REMOTO");
+            // e.printStackTrace();
+            System.out.println("Fin ejecucion");
+            System.exit(-1);
+        }
     }
 
     @Override
@@ -461,6 +503,6 @@ public class JSONController implements MagementInterface {
         //}
 
         //jsonController.delete(5);
-    jsonController.addBrand("Issss", "Germany", 1902);
+    jsonController.deleteBrand("Issss");
     }
 }
