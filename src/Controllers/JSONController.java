@@ -15,6 +15,7 @@ public class JSONController implements MagementInterface {
     private String SERVER_PATH, GET_CAR, SET_CAR, GET_BRAND, DELETE_CAR, SET_BRAND; // Datos de la conexion
     private String DELETE_BRAND;
     private String UPDATE_CAR;
+    private String UPDATE_BRAND;
 
     public JSONController() {
 
@@ -28,7 +29,7 @@ public class JSONController implements MagementInterface {
         SET_BRAND = "addBrand.php";
         DELETE_BRAND = "deleteBrand.php";
         UPDATE_CAR = "updateCar.php";
-
+        UPDATE_BRAND = "updateBrand.php";
     }
 
     @Override
@@ -528,15 +529,57 @@ public class JSONController implements MagementInterface {
 
     @Override
     public void updateBrand(String brandName, Brand brand) {
+        try {
+            JSONObject objCoche = new JSONObject();
+            JSONObject objPeticion = new JSONObject();
+            objCoche.put("brandNameToUpdate", brandName);
+            objCoche.put("brandName", brand.getBrandName());
+            objCoche.put("brandCountry", brand.getBrandCountry());
+            objCoche.put("BrandYearOfFundation", brand.getBrandYearOfFundation());
 
+            // Tenemos el jugador como objeto JSON. Lo a�adimos a una peticion
+            // Lo transformamos a string y llamamos al
+            // encargado de peticiones para que lo envie al PHP
+            objPeticion.put("petition", "update");
+            objPeticion.put("brand", objCoche);
+
+            String json = objPeticion.toJSONString();
+
+            System.out.println("Lanzamos peticion JSON para updatear un coche");
+
+            String url = SERVER_PATH + UPDATE_BRAND;
+
+            System.out.println("La url a la que lanzamos la petici�n es " + url);
+            System.out.println("El json que enviamos es: ");
+            System.out.println(json);
+            //System.exit(-1);
+
+            String response = encargadoPeticiones.postRequest(url, json);
+
+            System.out.println("El json que recibimos es: ");
+
+            System.out.println(response); // Traza para pruebas
+
+
+            // Parseamos la respuesta y la convertimos en un JSONObject
+            JSONObject respuesta = (JSONObject) JSONValue.parse(response.toString());
+
+            modificationResponse(respuesta);
+        } catch (Exception e) {
+            System.out.println(
+                    "Excepcion desconocida. Traza de error comentada en el mtodo 'updateCar()' de la clase JSON REMOTO");
+            // e.printStackTrace();
+            System.out.println("Fin ejecucion");
+            System.exit(-1);
+        }
     }
 
     public static void main(String[] args) {
         JSONController jsonController = new JSONController();
         ArrayList<Coche> cocheArrayList = jsonController.read();
            Brand ds = new Brand(3, "DS", "France", 2009);
-           Coche coche = new Coche(1, ds, "PruebitaGuapa", 2, "Rojo");
-            jsonController.update(coche, 6);
+            jsonController.updateBrand("Masserati", ds);
+
 //        cocheArrayList.add(coche);
         //  HashMap<String, Brand> readmarcas;
         //readmarcas = jsonController.readBrands();
