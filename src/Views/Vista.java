@@ -22,6 +22,7 @@ public class Vista {
             System.out.println("1. Fichero");
             System.out.println("2. BBDD");
             System.out.println("3. Hibernate");
+            System.out.println("4. JSON");
 
             try {
                 int option = Integer.parseInt(in.nextLine());
@@ -42,6 +43,13 @@ public class Vista {
                             System.err.println("Error de conexion");
                         }
                         break;
+                    case 4:
+                        System.out.println("JSON");
+                        try {
+                            emisor = new JSONController();
+                        } catch (Exception e) {
+                            System.err.println("Error");
+                        }
                 }
                 try {
 
@@ -67,6 +75,7 @@ public class Vista {
                                     System.out.println("1. A BBDD");
                                     System.out.println("2. A Fichero");
                                     System.out.println("3. A Hibernate");
+                                    System.out.println("4. A JSON");
                                     int optionFilesToOther = 0;
                                     try {
                                         optionFilesToOther = Integer.parseInt(in.nextLine());
@@ -99,6 +108,10 @@ public class Vista {
                                                 break;
                                             case 3:
                                                 receptor = new HibernateManager();
+                                                controller.put(emisor, receptor);
+                                                break;
+                                            case 4:
+                                                receptor = new JSONController();
                                                 controller.put(emisor, receptor);
                                                 break;
                                         }
