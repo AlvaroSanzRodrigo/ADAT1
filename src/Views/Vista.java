@@ -50,6 +50,9 @@ public class Vista {
                         } catch (Exception e) {
                             System.err.println("Error");
                         }
+                     //   default:
+                       //     System.err.println("ERROR, SALIENDO");
+                         //   System.exit(1);
                 }
                 try {
 
@@ -115,6 +118,9 @@ public class Vista {
                                                 controller.put(emisor, receptor);
                                                 break;
                                         }
+
+
+
                                     } catch (Exception e) {
                                         System.err.println("Error al introducir opción");
                                     }
@@ -136,6 +142,14 @@ public class Vista {
                                         } else if (emisor.getClass() == ConnectionManagement.class) {
                                             System.out.println("¿Cuantos coches desea añadir?");
                                             controller.add(emisor, yomismo.getCarsFromKB(Integer.parseInt(in.nextLine()), in, (ConnectionManagement) emisor));
+                                        } else if (emisor.getClass() == JSONController.class){
+                                            System.out.println("¿Cuantos coches desea añadir?");
+                                            int cochesParaAnnadirAhora = Integer.parseInt(in.nextLine());
+                                            ArrayList<Coche> cochesListos = new ArrayList<>();
+                                            for (int i = 0; i < cochesParaAnnadirAhora; i++) {
+                                                cochesListos.add(yomismo.getCarFromKB(in, emisor));
+                                            }
+                                            controller.add(emisor, cochesListos);
                                         }
                                     } catch (Exception e) {
                                         System.err.println("Error");

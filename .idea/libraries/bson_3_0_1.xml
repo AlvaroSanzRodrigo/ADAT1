@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="bson-3.0.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Librerias/mongodb/bson-3.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Librerias/mongodb/mongo-java-driver-3.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Librerias/mongodb/mongodb-driver-3.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Librerias/mongodb/mongodb-driver-async-3.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Librerias/mongodb/mongodb-driver-core-3.3.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/Librerias/mongodb/morphia-1.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/Librerias/mongodb/morphia-1.2.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/Librerias/mongodb/mongodb-driver-3.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
