@@ -63,7 +63,16 @@ public class MongoController implements MagementInterface {
 
     @Override
     public HashMap<String, Brand> readBrands() {
-        return null;
+        HashMap<String, Brand> brandHashMap = new HashMap<>();
+        for (Document brandDocument :database.getCollection("marcas").find()) {
+            Brand brand = new Brand();
+            brand.setIdBrand(Integer.parseInt(brandDocument.getString("idBrand")));
+            brand.setBrandYearOfFundation(Integer.parseInt(brandDocument.getString("brandYearOfFundation")));
+            brand.setBrandCountry(brandDocument.getString("brandCountry"));
+            brand.setBrandName(brandDocument.getString("brandName"));
+            brandHashMap.put(brand.getBrandName(), brand);
+        }
+        return brandHashMap;
     }
 
     @Override
@@ -84,5 +93,6 @@ public class MongoController implements MagementInterface {
     public static void main(String[] args) {
         MongoController mongoController = new MongoController();
         mongoController.read();
+        mongoController.readBrands();
     }
 }
