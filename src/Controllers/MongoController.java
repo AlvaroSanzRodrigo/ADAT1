@@ -25,8 +25,15 @@ public class MongoController implements MagementInterface {
 
     @Override
     public void write(ArrayList<Coche> coches) {
-
-
+        for (Coche coche : coches) {
+            Document cocheDocument = new Document();
+            cocheDocument.append("ID", coche.getID());
+            cocheDocument.append("idBrand", coche.getMarca().getIdBrand());
+            cocheDocument.append("cavallaje", coche.getCavallaje());
+            cocheDocument.append("color", coche.getColor());
+            cocheDocument.append("modelo", coche.getModelo());
+            database.getCollection("coches").insertOne(cocheDocument);
+        }
     }
 
     @Override
@@ -82,7 +89,7 @@ public class MongoController implements MagementInterface {
 
     @Override
     public void deleteBrand(String brandName) {
-
+        database.getCollection("marcas").deleteOne(eq("brandName", String.valueOf(brandName)));
     }
 
     @Override
