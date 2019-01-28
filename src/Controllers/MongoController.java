@@ -7,8 +7,10 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
+import javax.print.Doc;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -84,7 +86,14 @@ public class MongoController implements MagementInterface {
 
     @Override
     public void addBrand(String brandName, String brandCountry, int yearOfFundation) {
-
+        Document brandDocument = new Document();
+        Scanner scanner = new Scanner(System.in);
+        brandDocument.append("brandName", brandName);
+        brandDocument.append("brandCountry", brandCountry);
+        brandDocument.append("brandYearOfFundation", yearOfFundation);
+        System.out.println("Introduce un ID para la marca");
+        brandDocument.append("idBrand", scanner.nextLine());
+        database.getCollection("marcas").insertOne(brandDocument);
     }
 
     @Override
