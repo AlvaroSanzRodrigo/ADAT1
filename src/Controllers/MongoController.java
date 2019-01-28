@@ -67,7 +67,13 @@ public class MongoController implements MagementInterface {
 
     @Override
     public void update(Coche c, int ID) {
-
+        Document cocheDocument = new Document();
+        cocheDocument.append("ID", c.getID());
+        cocheDocument.append("idBrand", c.getMarca().getIdBrand());
+        cocheDocument.append("cavallaje", c.getCavallaje());
+        cocheDocument.append("color", c.getColor());
+        cocheDocument.append("modelo", c.getModelo());
+        database.getCollection("coches").updateOne(eq("ID", String.valueOf(ID)), cocheDocument);
     }
 
     @Override
