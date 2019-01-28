@@ -53,7 +53,7 @@ public class MongoController implements MagementInterface {
 
     @Override
     public void delete(int ID) {
-
+        database.getCollection("coches").deleteOne(eq("ID", String.valueOf(ID)));
     }
 
     @Override
@@ -94,5 +94,7 @@ public class MongoController implements MagementInterface {
         MongoController mongoController = new MongoController();
         mongoController.read();
         mongoController.readBrands();
+        mongoController.delete(9);
+
     }
 }
