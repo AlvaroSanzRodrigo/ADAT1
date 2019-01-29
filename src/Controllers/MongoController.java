@@ -109,7 +109,13 @@ public class MongoController implements MagementInterface {
 
     @Override
     public void updateBrand(String brandName, Brand brand) {
-
+        Document brandDocument = new Document();
+        Scanner scanner = new Scanner(System.in);
+        brandDocument.append("brandName", brand.getBrandName());
+        brandDocument.append("brandCountry", brand.getBrandCountry());
+        brandDocument.append("brandYearOfFundation", brand.getBrandYearOfFundation());
+        brandDocument.append("idBrand", brand.getIdBrand());
+        database.getCollection("marcas").updateOne(eq("brandName",brandName),brandDocument);
     }
 
     public static void main(String[] args) {
@@ -117,6 +123,5 @@ public class MongoController implements MagementInterface {
         mongoController.read();
         mongoController.readBrands();
         mongoController.delete(9);
-
     }
 }
