@@ -29,11 +29,11 @@ public class MongoController implements MagementInterface {
     public void write(ArrayList<Coche> coches) {
         for (Coche coche : coches) {
             Document cocheDocument = new Document();
-            cocheDocument.append("ID", coche.getID());
-            cocheDocument.append("idBrand", coche.getMarca().getIdBrand());
-            cocheDocument.append("cavallaje", coche.getCavallaje());
-            cocheDocument.append("color", coche.getColor());
-            cocheDocument.append("modelo", coche.getModelo());
+            cocheDocument.append("ID", String.valueOf(coche.getID()));
+            cocheDocument.append("idBrand", String.valueOf(coche.getMarca().getIdBrand()));
+            cocheDocument.append("cavallaje", String.valueOf(coche.getCavallaje()));
+            cocheDocument.append("color", String.valueOf(coche.getColor()));
+            cocheDocument.append("modelo", String.valueOf(coche.getModelo()));
             database.getCollection("coches").insertOne(cocheDocument);
         }
     }
@@ -52,7 +52,7 @@ public class MongoController implements MagementInterface {
             brand.setIdBrand(Integer.parseInt(brandDocument.getString("idBrand")));
             brand.setBrandYearOfFundation(Integer.parseInt(brandDocument.getString("brandYearOfFundation")));
             brand.setBrandCountry(brandDocument.getString("brandCountry"));
-            brand.setBrandName(brandDocument.getString("brandName"));
+            brand.setBrandName(brandDocument. getString("brandName"));
             coche.setMarca(brand);
             coche.setID(Integer.parseInt(document.getString("ID")));
             cocheArrayList.add(coche);
@@ -110,7 +110,6 @@ public class MongoController implements MagementInterface {
     @Override
     public void updateBrand(String brandName, Brand brand) {
         Document brandDocument = new Document();
-        Scanner scanner = new Scanner(System.in);
         brandDocument.append("brandName", brand.getBrandName());
         brandDocument.append("brandCountry", brand.getBrandCountry());
         brandDocument.append("brandYearOfFundation", brand.getBrandYearOfFundation());
